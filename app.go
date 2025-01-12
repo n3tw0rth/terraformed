@@ -9,12 +9,12 @@ import (
 
 	// "github.com/fogleman/ease"
 
-	"github.com/lazytf/internal"
 	"github.com/lazytf/internal/ui"
+	"github.com/lazytf/models"
 )
 
 func main() {
-	initialModel := model{0, false, 10, 0, 0, false, false, 0, 0}
+	initialModel := Model{0, false, 10, 0, 0, false, false, 0, 0}
 	p := tea.NewProgram(initialModel, tea.WithAltScreen())
 	if _, err := p.Run(); err != nil {
 		fmt.Println("could not start program:", err)
@@ -38,23 +38,25 @@ func frame() tea.Cmd {
 	})
 }
 
-type model struct {
-	Choice        int
-	Chosen        bool
-	Ticks         int
-	Frames        int
-	Progress      float64
-	Loaded        bool
-	Quitting      bool
-	height, width int
-}
+type Model models.Model
 
-func (m model) Init() tea.Cmd {
+// type Model struct {
+// 	Choice        int
+// 	Chosen        bool
+// 	Ticks         int
+// 	Frames        int
+// 	Progress      float64
+// 	Loaded        bool
+// 	Quitting      bool
+// 	Height, Width int
+// }
+
+func (m Model) Init() tea.Cmd {
 	return tick()
 }
 
 // Main update function.
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Make sure these keys always quit
 	if msg, ok := msg.(tea.KeyMsg); ok {
 		k := msg.String()
@@ -71,30 +73,32 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case tea.WindowSizeMsg:
-		m.width = msg.Width
-		m.height = msg.Height
+		m.Width = msg.Width
+		m.Height = msg.Height
 	}
 	return m, nil
 }
 
 // The main view, which just calls the appropriate sub-view
-func (m model) View() string {
+func (m Model) View() string {
 	header := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(m.width).
-		Border(lipgloss.NormalBorder(), false, false, true, false).
+		Width(m.Width).
+		PaddingLeft(1).
+		Border(lipgloss.NormalBorder(), false, false).
 		Render(ui.GetHeader())
 
 	footer := lipgloss.NewStyle().
 		Align(lipgloss.Left).
-		Width(m.width).
+		Width(m.Width).
 		Render(ui.GetFooter())
 
+	contentHeight := (m.Height - lipgloss.Height(header) - lipgloss.Height(footer)) - 2
 	content := lipgloss.NewStyle().
-		Width(m.width).
-		Height(m.height-lipgloss.Height(header)-lipgloss.Height(footer)).
+		Width(m.Width).
+		Height(contentHeight).
 		Align(lipgloss.Center, lipgloss.Center).
-		Render(internal.KeywordStyle.Render("Some Text Goes Here"))
+		Render(ui.Layout(models.Model(m), contentHeight))
 
 	return lipgloss.JoinVertical(lipgloss.Top, header, content, footer)
 }
