@@ -5,7 +5,10 @@ use ratatui::{
     widgets::{Block, BorderType, Paragraph, Widget},
 };
 
-use crate::app::App;
+use crate::panes::workspaces::WorkspacesPane;
+use crate::{
+    app::App,
+};
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
@@ -33,24 +36,6 @@ impl Widget for &App {
                 .areas(body_right_sector);
 
         {
-            Paragraph::new("Project name -> Workspace")
-                .centered()
-                .block(Block::bordered().border_type(BorderType::Rounded))
-                .render(project, buf);
-        }
-        {
-            Block::bordered()
-                .border_type(BorderType::Rounded)
-                .title("Runs")
-                .render(runs, buf);
-        }
-        {
-            Block::bordered()
-                .border_type(BorderType::Rounded)
-                .title("Workspaces")
-                .render(workspaces, buf);
-        }
-        {
             Block::bordered()
                 .border_type(BorderType::Rounded)
                 .title("Diff")
@@ -63,9 +48,10 @@ impl Widget for &App {
                 .render(command_log, buf);
         }
         {
-            let text = Line::from(
-                "Apply: a | Plan: p | Destroy: d | State: s | Workspace: w | Keybinds: ? | Cancel: q",
-            );
+            let text = Line::from(format!(
+                "Apply: a | Plan: p | Destroy: d | State: s | Workspace: w | Keybinds: ? | Quit: q | Version: {}",
+                env!("CARGO_PKG_VERSION")
+            ));
             Paragraph::new(text).left_aligned().render(keybinds, buf);
         }
     }
