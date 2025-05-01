@@ -4,15 +4,15 @@ use ratatui::{
     widgets::{Block, BorderType},
 };
 
-pub fn new<'a>(is_selected: bool) -> Result<Block<'a>, Box<dyn std::error::Error>> {
+pub fn new<'a>(is_selected: bool) -> Block<'a> {
     if is_selected {
-        Ok(Block::bordered()
+        Block::bordered()
             .border_type(BorderType::Rounded)
             .border_style(Style::new().green())
-            .title_alignment(layout::Alignment::Left))
+            .title_alignment(layout::Alignment::Left)
     } else {
-        Ok(Block::bordered()
+        Block::bordered()
             .border_type(BorderType::Rounded)
-            .title_alignment(layout::Alignment::Left))
+            .title_alignment(layout::Alignment::Left)
     }
 }

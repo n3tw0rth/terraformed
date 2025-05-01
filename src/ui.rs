@@ -8,6 +8,7 @@ use ratatui::{
 use crate::panes::workspaces::WorkspacesPane;
 use crate::{
     app::App,
+    panes::{Pane, PaneWidget, runs::RunsPane, status::StatusPane},
 };
 
 impl Widget for &App {
@@ -24,7 +25,7 @@ impl Widget for &App {
 
         let [keybinds] = Layout::horizontal([Constraint::Percentage(100)]).areas(footer);
 
-        let [project, runs, workspaces] = Layout::vertical([
+        let [status, runs, workspaces] = Layout::vertical([
             Constraint::Length(3),
             Constraint::Min(0), // Takes whatever space is left
             Constraint::Percentage(30),
@@ -34,6 +35,10 @@ impl Widget for &App {
         let [tabs, command_log] =
             Layout::vertical([Constraint::Percentage(70), Constraint::Percentage(30)])
                 .areas(body_right_sector);
+
+        StatusPane::new().render(status, buf, self.active_pane == Pane::Status);
+        RunsPane::new().render(runs, buf, self.active_pane == Pane::Runs);
+        WorkspacesPane::new().render(workspaces, buf, self.active_pane == Pane::Workspaces);
 
         {
             Block::bordered()

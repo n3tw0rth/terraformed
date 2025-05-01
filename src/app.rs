@@ -76,6 +76,10 @@ impl App {
             // Pane Traversal
             KeyCode::Right => self.events.send(AppEvent::NextPane),
             KeyCode::Left => self.events.send(AppEvent::PreviousPane),
+            KeyCode::Char('1') => self.events.send(AppEvent::SetPane(Pane::Status)),
+            KeyCode::Char('2') => self.events.send(AppEvent::SetPane(Pane::Runs)),
+            KeyCode::Char('3') => self.events.send(AppEvent::SetPane(Pane::Workspaces)),
+
             _ => {}
         }
         Ok(())
