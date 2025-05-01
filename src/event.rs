@@ -15,7 +15,7 @@ pub enum Event {
     /// An event that is emitted on a regular schedule.
     ///
     /// Use this event to run any code which has to run outside of being a direct response to a user
-    /// event. e.g. polling exernal systems, updating animations, or rendering the UI based on a
+    /// event. e.g. polling external systems, updating animations, or rendering the UI based on a
     /// fixed frame rate.
     Tick,
     /// Crossterm events.
@@ -88,7 +88,7 @@ impl EventHandler {
     /// This is useful for sending events to the event handler which will be processed by the next
     /// iteration of the application's event loop.
     pub fn send(&mut self, app_event: AppEvent) {
-        // Ignore the result as the reciever cannot be dropped while this struct still has a
+        // Ignore the result as the receiver cannot be dropped while this struct still has a
         // reference to it
         let _ = self.sender.send(Event::App(app_event));
     }
