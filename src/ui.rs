@@ -5,7 +5,11 @@ use ratatui::{
     widgets::{Block, BorderType, Paragraph, Widget},
 };
 
-use crate::app::App;
+use crate::panes::workspaces::WorkspacesPane;
+use crate::{
+    app::App,
+    panes::{Pane, PaneWidget, runs::RunsPane, status::StatusPane},
+};
 
 impl Widget for &App {
     fn render(self, area: Rect, buf: &mut Buffer) {
@@ -21,7 +25,7 @@ impl Widget for &App {
 
         let [keybinds] = Layout::horizontal([Constraint::Percentage(100)]).areas(footer);
 
-        let [project, runs, workspaces] = Layout::vertical([
+        let [status, runs, workspaces] = Layout::vertical([
             Constraint::Length(3),
             Constraint::Min(0), // Takes whatever space is left
             Constraint::Percentage(30),
@@ -32,24 +36,10 @@ impl Widget for &App {
             Layout::vertical([Constraint::Percentage(70), Constraint::Percentage(30)])
                 .areas(body_right_sector);
 
-        {
-            Paragraph::new("Project name -> Workspace")
-                .centered()
-                .block(Block::bordered().border_type(BorderType::Rounded))
-                .render(project, buf);
-        }
-        {
-            Block::bordered()
-                .border_type(BorderType::Rounded)
-                .title("Runs")
-                .render(runs, buf);
-        }
-        {
-            Block::bordered()
-                .border_type(BorderType::Rounded)
-                .title("Workspaces")
-                .render(workspaces, buf);
-        }
+        StatusPane::new().render(status, buf, self.active_pane == Pane::Status);
+        RunsPane::new().render(runs, buf, self.active_pane == Pane::Runs);
+        WorkspacesPane::new().render(workspaces, buf, self.active_pane == Pane::Workspaces);
+
         {
             Block::bordered()
                 .border_type(BorderType::Rounded)
@@ -63,9 +53,10 @@ impl Widget for &App {
                 .render(command_log, buf);
         }
         {
-            let text = Line::from(
-                "Apply: a | Plan: p | Destroy: d | State: s | Workspace: w | Keybinds: ? | Cancel: q",
-            );
+            let text = Line::from(format!(
+                "Apply: a | Plan: p | Destroy: d | State: s | Workspace: w | Keybinds: ? | Quit: q | Version: {}",
+                env!("CARGO_PKG_VERSION")
+            ));
             Paragraph::new(text).left_aligned().render(keybinds, buf);
         }
     }

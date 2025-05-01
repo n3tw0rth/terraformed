@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use color_eyre::eyre::Result;
 use tracing::level_filters::LevelFilter;
 use tracing_error::ErrorLayer;
-use tracing_subscriber::{self, layer::SubscriberExt, util::SubscriberInitExt, Layer};
+use tracing_subscriber::{self, Layer, layer::SubscriberExt, util::SubscriberInitExt};
 
 pub struct Tracer;
 impl Tracer {
@@ -13,7 +13,7 @@ impl Tracer {
         std::fs::create_dir_all(directory.clone())?;
 
         // INFO: terraformed.log
-        let log_path = directory.join(format!("{}.log", env!("CARGO_PKG_NAME")).clone());
+        let log_path = directory.join(format!("{}.log", env!("CARGO_PKG_NAME")));
         let log_file = std::fs::File::create(log_path)?;
 
         let file_subscriber = tracing_subscriber::fmt::layer()
