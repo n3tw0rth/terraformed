@@ -1,9 +1,6 @@
-# terraformed
+⚠️ Development on this repository has been **discontinued**.
 
-terminal app to manage terraform
+Please use the actively maintained repository instead:
+[https://github.com/ushiradineth/lazytf](https://github.com/ushiradineth/lazytf)
 
-🏗️ Under development
-
-## Current UI
-
-![Current](assets/current.png)
+All future updates, fixes, and features will be available there.
