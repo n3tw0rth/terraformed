@@ -3,5 +3,6 @@ pub mod cli;
 pub mod components;
 pub mod event;
 pub mod panes;
+pub mod terraform;
 pub mod tracing;
 pub mod ui;
